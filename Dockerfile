@@ -1,5 +1,28 @@
-FROM nginx:latest
+name: Docker_CI_setup_using_self-hosted_runner
 
-COPY . /usr/share/nginx/html
+on:
+  push:
 
-EXPOSE 80
+jobs:
+  docker:
+    runs-on: self-hosted
+
+    steps:
+      - name: Set up QEMU test
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/docker-ci-selfhosted-runner-demo:latest
