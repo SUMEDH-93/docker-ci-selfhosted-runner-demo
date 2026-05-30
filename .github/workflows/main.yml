@@ -8,7 +8,10 @@ jobs:
     runs-on: self-hosted
 
     steps:
-      - name: Set up QEMU test
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
@@ -20,9 +23,9 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push
+      - name: Build and Push Docker Image
         uses: docker/build-push-action@v6
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/docker-ci-selfhosted-runner-demo:latest
+          tags: sumedh1233/docker-ci-selfhosted-runner-demo:latest
